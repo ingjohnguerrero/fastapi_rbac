@@ -3,6 +3,11 @@ alwaysApply: true
 ---
 
 <!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+Implementation plan: specs/001-hybrid-rbac-identity/plan.md
+- Python 3.12, FastAPI, uvicorn, SQLAlchemy 2.x, PyJWT HS256, pwdlib Argon2
+- Layout: app/ (main, cli, auth with no store on authorize, api, models, adapters)
+- Tests: tests/unit, tests/integration, tests/contract — TDD, test_ac_fr_* / test_ac_nfr_*
+- Init: python -m app.cli init ; serve: uvicorn app.main:app
+- Default store: sqlite:///./rbac.db via DATABASE_URL; JWT_SECRET required
+- HTTP denials: 401 Unauthorized, 403 Forbidden, 404 Not found (no existence leak)
 <!-- SPECKIT END -->
