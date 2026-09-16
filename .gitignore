@@ -151,6 +151,11 @@ activemq-data/
 .env
 .envrc
 .venv
+
+# Local identity store (default SQLite)
+rbac.db
+*.db
+*.db-journal
 env/
 venv/
 ENV/

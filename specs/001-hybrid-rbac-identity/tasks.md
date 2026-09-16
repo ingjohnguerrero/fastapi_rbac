@@ -25,10 +25,10 @@
 
 **Purpose**: Empty package layout and installable dependencies
 
-- [ ] T001 Create package tree `app/`, `app/api/`, `app/auth/`, `app/models/`, `app/services/`, `app/adapters/`, `tests/unit/`, `tests/integration/`, `tests/contract/`, `scripts/` with `__init__.py` files per `specs/001-hybrid-rbac-identity/plan.md`
-- [ ] T002 Write `requirements.txt` with FastAPI, uvicorn, SQLAlchemy 2.x, PyJWT, pwdlib[argon2], pydantic-settings, pytest, httpx, coverage
-- [ ] T003 [P] Write `.env.example` with `JWT_SECRET`, `JWT_ALGORITHM`, `ACCESS_TOKEN_EXPIRE_MINUTES`, `DATABASE_URL`, `ADMIN_*` per README
-- [ ] T004 [P] Write `pytest.ini` (`testpaths = tests`) and a stub `tests/conftest.py`
+- [X] T001 Create package tree `app/`, `app/api/`, `app/auth/`, `app/models/`, `app/services/`, `app/adapters/`, `tests/unit/`, `tests/integration/`, `tests/contract/`, `scripts/` with `__init__.py` files per `specs/001-hybrid-rbac-identity/plan.md`
+- [X] T002 Write `requirements.txt` with FastAPI, uvicorn, SQLAlchemy 2.x, PyJWT, pwdlib[argon2], pydantic-settings, pytest, httpx, coverage
+- [X] T003 [P] Write `.env.example` with `JWT_SECRET`, `JWT_ALGORITHM`, `ACCESS_TOKEN_EXPIRE_MINUTES`, `DATABASE_URL`, `ADMIN_*` per README
+- [X] T004 [P] Write `pytest.ini` (`testpaths = tests`) and a stub `tests/conftest.py`
 
 **Checkpoint**: `pip install -r requirements.txt` and `pytest` collect 0 tests
 
@@ -40,18 +40,18 @@
 
 **⚠️ CRITICAL**: No user story work until this phase is complete. Token modules MUST NOT import `app.adapters.db`.
 
-- [ ] T005 Write failing `tests/unit/test_settings.py` asserting missing `JWT_SECRET` fails closed
-- [ ] T006 Implement `app/settings.py` (pydantic-settings; default `DATABASE_URL=sqlite:///./rbac.db`, HS256, TTL 30) so T005 passes
-- [ ] T007 Write failing `tests/unit/test_hashing.py` for hash/verify and never-plaintext
-- [ ] T008 Implement `app/auth/hashing.py` (pwdlib Argon2) so T007 passes
-- [ ] T009 Write failing `tests/unit/test_tokens.py` for issue/verify, expired and bad-signature → fail closed, no database import
-- [ ] T010 Implement `app/auth/tokens.py` (PyJWT HS256 claims `sub`, `role`, `permissions`, `exp`, `iat`) so T009 passes
-- [ ] T011 Implement engine/session/`create_all` in `app/adapters/db.py` from `DATABASE_URL`
-- [ ] T012 Implement SQLAlchemy entities in `app/models/entities.py` (User, Role, Permission, `roles_permissions`, `users_permissions`) per `specs/001-hybrid-rbac-identity/data-model.md`
-- [ ] T013 Implement `app/auth/principal.py` (Bearer → Principal from claims only)
-- [ ] T014 Implement `app/auth/authorize.py` (permission names + `sub` vs `{id}` ownership; no session)
-- [ ] T015 Extend `tests/conftest.py` with temp SQLite, env fixtures, and SQLAlchemy `before_cursor_execute` query counter
-- [ ] T016 Implement empty FastAPI app in `app/main.py` (no business routes yet; lifespan must not require a DB ping)
+- [X] T005 Write failing `tests/unit/test_settings.py` asserting missing `JWT_SECRET` fails closed
+- [X] T006 Implement `app/settings.py` (pydantic-settings; default `DATABASE_URL=sqlite:///./rbac.db`, HS256, TTL 30) so T005 passes
+- [X] T007 Write failing `tests/unit/test_hashing.py` for hash/verify and never-plaintext
+- [X] T008 Implement `app/auth/hashing.py` (pwdlib Argon2) so T007 passes
+- [X] T009 Write failing `tests/unit/test_tokens.py` for issue/verify, expired and bad-signature → fail closed, no database import
+- [X] T010 Implement `app/auth/tokens.py` (PyJWT HS256 claims `sub`, `role`, `permissions`, `exp`, `iat`) so T009 passes
+- [X] T011 Implement engine/session/`create_all` in `app/adapters/db.py` from `DATABASE_URL`
+- [X] T012 Implement SQLAlchemy entities in `app/models/entities.py` (User, Role, Permission, `roles_permissions`, `users_permissions`) per `specs/001-hybrid-rbac-identity/data-model.md`
+- [X] T013 Implement `app/auth/principal.py` (Bearer → Principal from claims only)
+- [X] T014 Implement `app/auth/authorize.py` (permission names + `sub` vs `{id}` ownership; no session)
+- [X] T015 Extend `tests/conftest.py` with temp SQLite, env fixtures, and SQLAlchemy `before_cursor_execute` query counter
+- [X] T016 Implement empty FastAPI app in `app/main.py` (no business routes yet; lifespan must not require a DB ping)
 
 **Checkpoint**: Unit tests for settings/hashing/tokens green; `uvicorn` can import `app.main:app`
 
@@ -65,13 +65,13 @@
 
 ### Tests for User Story 1 (REQUIRED — TDD)
 
-- [ ] T017 [US1] Write failing `tests/integration/test_ac_fr_24_init.py` covering AC-FR-24, AC-FR-25, AC-FR-28, AC-FR-29, AC-FR-21a
+- [X] T017 [US1] Write failing `tests/integration/test_ac_fr_24_init.py` covering AC-FR-24, AC-FR-25, AC-FR-28, AC-FR-29, AC-FR-21a
 
 ### Implementation for User Story 1
 
-- [ ] T018 [US1] Implement catalog seed in `app/services/seed.py` (roles, default permissions, `roles_permissions`)
-- [ ] T019 [US1] Implement `python -m app.cli init` in `app/cli.py` per `specs/001-hybrid-rbac-identity/contracts/init-cli.md`
-- [ ] T020 [US1] Implement `scripts/init.sh` wrapping `python -m app.cli init`
+- [X] T018 [US1] Implement catalog seed in `app/services/seed.py` (roles, default permissions, `roles_permissions`)
+- [X] T019 [US1] Implement `python -m app.cli init` in `app/cli.py` per `specs/001-hybrid-rbac-identity/contracts/init-cli.md`
+- [X] T020 [US1] Implement `scripts/init.sh` wrapping `python -m app.cli init`
 
 **Checkpoint**: `pytest tests/integration/test_ac_fr_24_init.py` green
 
@@ -85,13 +85,13 @@
 
 ### Tests for User Story 2 (REQUIRED — TDD)
 
-- [ ] T021 [US2] Write failing `tests/integration/test_ac_fr_01_login.py` covering AC-FR-01, AC-FR-03, AC-FR-07 (query count)
+- [X] T021 [US2] Write failing `tests/integration/test_ac_fr_01_login.py` covering AC-FR-01, AC-FR-03, AC-FR-07 (query count)
 
 ### Implementation for User Story 2
 
-- [ ] T022 [US2] Implement one-read login + permission union in `app/services/login.py`
-- [ ] T023 [US2] Implement `POST /auth/login` in `app/api/auth.py` (200/401/422 per `contracts/http-api.md`)
-- [ ] T024 [US2] Include auth router in `app/main.py`
+- [X] T022 [US2] Implement one-read login + permission union in `app/services/login.py`
+- [X] T023 [US2] Implement `POST /auth/login` in `app/api/auth.py` (200/401/422 per `contracts/http-api.md`)
+- [X] T024 [US2] Include auth router in `app/main.py`
 
 **Checkpoint**: `pytest tests/integration/test_ac_fr_01_login.py` green
 
@@ -105,14 +105,14 @@
 
 ### Tests for User Story 3 (REQUIRED — TDD)
 
-- [ ] T025 [P] [US3] Write failing `tests/integration/test_ac_fr_09_authorize.py` covering AC-FR-09, AC-FR-10
-- [ ] T026 [P] [US3] Write failing `tests/unit/test_ac_fr_11_no_db.py` covering AC-FR-11 (0 sessions for the decision)
-- [ ] T027 [P] [US3] Write failing `tests/contract/test_peer_jwt.py` covering FR-12 / AC peer (0 HTTP)
+- [X] T025 [P] [US3] Write failing `tests/integration/test_ac_fr_09_authorize.py` covering AC-FR-09, AC-FR-10
+- [X] T026 [P] [US3] Write failing `tests/unit/test_ac_fr_11_no_db.py` covering AC-FR-11 (0 sessions for the decision)
+- [X] T027 [P] [US3] Write failing `tests/contract/test_peer_jwt.py` covering FR-12 / AC peer (0 HTTP)
 
 ### Implementation for User Story 3
 
-- [ ] T028 [US3] Implement `GET /users` in `app/api/users.py` (401 unauthenticated, 403 without `users:read`, 200 list for admin) using `app/auth/authorize.py` only for the decision
-- [ ] T029 [US3] Mount users router in `app/main.py`
+- [X] T028 [US3] Implement `GET /users` in `app/api/users.py` (401 unauthenticated, 403 without `users:read`, 200 list for admin) using `app/auth/authorize.py` only for the decision
+- [X] T029 [US3] Mount users router in `app/main.py`
 
 **Checkpoint**: T025–T027 green; authorize path does not import a session for the decision
 
@@ -126,13 +126,13 @@
 
 ### Tests for User Story 4 (REQUIRED — TDD)
 
-- [ ] T030 [US4] Write failing `tests/integration/test_ac_fr_10d_admin_users.py` covering AC-FR-10d, AC-FR-14, AC-FR-16
+- [X] T030 [US4] Write failing `tests/integration/test_ac_fr_10d_admin_users.py` covering AC-FR-10d, AC-FR-14, AC-FR-16
 
 ### Implementation for User Story 4
 
-- [ ] T031 [US4] Implement user CRUD in `app/services/users.py` (unique 409, role catalog check, never return hashes)
-- [ ] T032 [US4] Extend `app/api/users.py` with `POST /users`, `GET /users/{id}`, `PATCH /users/{id}`, `DELETE /users/{id}` for admin
-- [ ] T033 [US4] Implement `GET /roles` in `app/api/roles.py` and mount in `app/main.py`
+- [X] T031 [US4] Implement user CRUD in `app/services/users.py` (unique 409, role catalog check, never return hashes)
+- [X] T032 [US4] Extend `app/api/users.py` with `POST /users`, `GET /users/{id}`, `PATCH /users/{id}`, `DELETE /users/{id}` for admin
+- [X] T033 [US4] Implement `GET /roles` in `app/api/roles.py` and mount in `app/main.py`
 
 **Checkpoint**: Admin HTTP matrix for users/roles green
 
@@ -146,11 +146,11 @@
 
 ### Tests for User Story 5 (REQUIRED — TDD)
 
-- [ ] T034 [US5] Write failing `tests/integration/test_ac_fr_10a_self.py` covering AC-FR-10a, AC-FR-10b, AC-FR-10c
+- [X] T034 [US5] Write failing `tests/integration/test_ac_fr_10a_self.py` covering AC-FR-10a, AC-FR-10b, AC-FR-10c
 
 ### Implementation for User Story 5
 
-- [ ] T035 [US5] Extend `app/api/users.py` with `GET /users/me` and ownership 404 in GET/PATCH/DELETE; reject or ignore `role` on member PATCH
+- [X] T035 [US5] Extend `app/api/users.py` with `GET /users/me` and ownership 404 in GET/PATCH/DELETE; reject or ignore `role` on member PATCH
 
 **Checkpoint**: Existence-leak tests green (404 not 403)
 
@@ -164,12 +164,12 @@
 
 ### Tests for User Story 6 (REQUIRED — TDD)
 
-- [ ] T036 [US6] Write failing `tests/integration/test_ac_fr_21_hybrid.py` covering AC-FR-21
+- [X] T036 [US6] Write failing `tests/integration/test_ac_fr_21_hybrid.py` covering AC-FR-21
 
 ### Implementation for User Story 6
 
-- [ ] T037 [US6] Implement grant attach in `app/services/grants.py`
-- [ ] T038 [US6] Implement `POST /roles/{id}/permissions` and `POST /users/{id}/permissions` in `app/api/roles.py` / `app/api/users.py` (admin `users:grant` / `roles:grant`)
+- [X] T037 [US6] Implement grant attach in `app/services/grants.py`
+- [X] T038 [US6] Implement `POST /roles/{id}/permissions` and `POST /users/{id}/permissions` in `app/api/roles.py` / `app/api/users.py` (admin `users:grant` / `roles:grant`)
 
 **Checkpoint**: Hybrid union appears in JWT; no third role
 
@@ -183,11 +183,11 @@
 
 ### Tests for User Story 7 (REQUIRED — TDD)
 
-- [ ] T039 [US7] Write failing `tests/integration/test_ac_fr_22_health.py` covering FR-22 / NFR-08
+- [X] T039 [US7] Write failing `tests/integration/test_ac_fr_22_health.py` covering FR-22 / NFR-08
 
 ### Implementation for User Story 7
 
-- [ ] T040 [US7] Implement `GET /health` in `app/main.py` with no database access
+- [X] T040 [US7] Implement `GET /health` in `app/main.py` with no database access
 
 **Checkpoint**: Health green without a token
 
@@ -197,11 +197,11 @@
 
 **Purpose**: Operator artifacts, remaining AC, regression
 
-- [ ] T041 [P] Add `Dockerfile` (uvicorn, no baked `JWT_SECRET`) at repo root
-- [ ] T042 [P] Add `docker-compose.yml` SQLite volume layout per README
-- [ ] T043 Write `tests/integration/test_ac_nfr_05_image.py` (skip if Docker missing) covering AC-NFR-05
-- [ ] T044 Write `tests/integration/test_ac_nfr_03_postgres.py` (`skipif` no Docker) covering AC-NFR-03
-- [ ] T045 Confirm no `*.feature` files (AC-FR-33); run full `pytest` and `specs/001-hybrid-rbac-identity/quickstart.md` locally
+- [X] T041 [P] Add `Dockerfile` (uvicorn, no baked `JWT_SECRET`) at repo root
+- [X] T042 [P] Add `docker-compose.yml` SQLite volume layout per README
+- [X] T043 Write `tests/integration/test_ac_nfr_05_image.py` (skip if Docker missing) covering AC-NFR-05
+- [X] T044 Write `tests/integration/test_ac_nfr_03_postgres.py` (`skipif` no Docker) covering AC-NFR-03
+- [X] T045 Confirm no `*.feature` files (AC-FR-33); run full `pytest` and `specs/001-hybrid-rbac-identity/quickstart.md` locally
 
 ---
 

@@ -5,14 +5,11 @@ Operator path matches [README.md](../../README.md). Construction must make these
 ## Local
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
 cp .env.example .env
 # set JWT_SECRET and ADMIN_*
 
-python -m app.cli init
+./scripts/init.sh
+source .venv/bin/activate
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 

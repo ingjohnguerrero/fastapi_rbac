@@ -6,7 +6,7 @@ Identity and access service: username/password login, HS256 JWT, **hybrid RBAC**
 
 Full contract: [Requirements.md](Requirements.md). Views: [Architecture-vision.md](Architecture-vision.md).
 
-**Status.** This README is the operator guide for the implemented service (local run, env, Docker). Application source, `Dockerfile`, and Compose files land in Construction under **TDD** (red pytest per AC → code → refactor). Gherkin is not used.
+**Status.** Operator guide for the running service (local, env, Docker). Construction used **TDD** (pytest named from each AC). Gherkin is not used.
 
 ---
 
@@ -78,18 +78,18 @@ SQLite URLs are relative to the process working directory. In Docker, point the 
 ## Local setup
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
 cp .env.example .env
 # edit .env: set JWT_SECRET and ADMIN_*
 
-python -m app.cli init
-# equivalent: ./scripts/init.sh
+./scripts/init.sh
+# creates .venv if needed, installs requirements.txt, then seeds the store
+# equivalent once the venv exists: .venv/bin/python -m app.cli init
 
+source .venv/bin/activate
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
+
+Do not run `python3 -m app.cli init` against the system interpreter: it will not see packages installed in `.venv`. Use `./scripts/init.sh` or `.venv/bin/python -m app.cli init`.
 
 Init creates or migrates the schema, seeds roles `user` and `admin`, seeds the default permission catalog, and inserts the first admin if none exists. If an admin already exists, init is idempotent (exit 0, password unchanged).
 
