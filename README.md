@@ -1,8 +1,12 @@
-# fastapi_rbac
+# fastapi RBAC
 
 Identity and access service: username/password login, HS256 JWT, **hybrid RBAC** (exactly one role per user — `user` or `admin` — plus optional extra permission grants). Authorize is decided from the token (`sub`, `role`, `permissions`); it does not query the identity store.
 
 `admin` CRUD all users. `user` CRUD only their own record (`user_id` from login / JWT `sub`). Deny responses are HTTP status codes only (401 / 403 / 404) and do not disclose whether another account exists.
+
+![OpenAPI UI for fastapi_rbac: login, users, roles, and health](docs/openapi.png)
+
+Interactive contract at `/docs` after the service is running (`http://127.0.0.1:8000/docs`). Login is `POST /auth/login` with **username** and **password** (not email). Use **Authorize** with `Bearer <access_token>` for the locked routes.
 
 Full contract: [Requirements.md](Requirements.md). Views: [Architecture-vision.md](Architecture-vision.md).
 
