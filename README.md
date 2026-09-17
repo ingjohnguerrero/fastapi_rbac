@@ -1,12 +1,16 @@
-# fastapi_rbac
+# fastapi RBAC
 
 Identity and access service: username/password login, HS256 JWT, **hybrid RBAC** (exactly one role per user — `user` or `admin` — plus optional extra permission grants). Authorize is decided from the token (`sub`, `role`, `permissions`); it does not query the identity store.
 
 `admin` CRUD all users. `user` CRUD only their own record (`user_id` from login / JWT `sub`). Deny responses are HTTP status codes only (401 / 403 / 404) and do not disclose whether another account exists.
 
+![OpenAPI UI for fastapi_rbac: login, users, roles, and health](docs/openapi.png)
+
+Interactive contract at `/docs` after the service is running (`http://127.0.0.1:8000/docs`). Login is `POST /auth/login` with **username** and **password** (not email). Use **Authorize** with `Bearer <access_token>` for the locked routes.
+
 Full contract: [Requirements.md](Requirements.md). Views: [Architecture-vision.md](Architecture-vision.md).
 
-**Status.** This README is the operator guide for the implemented service (local run, env, Docker). Application source, `Dockerfile`, and Compose files land in Construction under **TDD** (red pytest per AC → code → refactor). Gherkin is not used.
+**Status.** Operator guide for the running service (local, env, Docker). Construction used **TDD** (pytest named from each AC). Gherkin is not used.
 
 ---
 
@@ -78,18 +82,18 @@ SQLite URLs are relative to the process working directory. In Docker, point the 
 ## Local setup
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
 cp .env.example .env
 # edit .env: set JWT_SECRET and ADMIN_*
 
-python -m app.cli init
-# equivalent: ./scripts/init.sh
+./scripts/init.sh
+# creates .venv if needed, installs requirements.txt, then seeds the store
+# equivalent once the venv exists: .venv/bin/python -m app.cli init
 
+source .venv/bin/activate
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
+
+Do not run `python3 -m app.cli init` against the system interpreter: it will not see packages installed in `.venv`. Use `./scripts/init.sh` or `.venv/bin/python -m app.cli init`.
 
 Init creates or migrates the schema, seeds roles `user` and `admin`, seeds the default permission catalog, and inserts the first admin if none exists. If an admin already exists, init is idempotent (exit 0, password unchanged).
 
