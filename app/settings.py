@@ -2,7 +2,7 @@
 
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -21,6 +21,13 @@ class Settings(BaseSettings):
     admin_username: str | None = None
     admin_email: str | None = None
     admin_password: str | None = Field(default=None)
+
+    @field_validator("jwt_secret")
+    @classmethod
+    def jwt_secret_must_be_non_empty(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("JWT_SECRET is required")
+        return value
 
 
 @lru_cache

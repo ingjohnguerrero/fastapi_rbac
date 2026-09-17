@@ -14,6 +14,13 @@ from app.auth.hashing import hash_password
 from app.models.entities import Permission, Role, User
 
 
+def _ensure_grants(role: Role, names: tuple[str, ...], by_perm: dict[str, Permission]) -> None:
+    existing = {p.name for p in role.permissions}
+    for name in names:
+        if name not in existing:
+            role.permissions.append(by_perm[name])
+
+
 def seed_catalog(session: Session) -> None:
     for name in (ROLE_USER, ROLE_ADMIN):
         if session.scalar(select(Role).where(Role.name == name)) is None:
@@ -30,8 +37,8 @@ def seed_catalog(session: Session) -> None:
     user = session.scalar(select(Role).where(Role.name == ROLE_USER))
     assert admin is not None and user is not None
 
-    admin.permissions = [by_perm[n] for n in ADMIN_GRANTS]
-    user.permissions = [by_perm[n] for n in USER_GRANTS]
+    _ensure_grants(admin, ADMIN_GRANTS, by_perm)
+    _ensure_grants(user, USER_GRANTS, by_perm)
     session.flush()
 
 

@@ -19,6 +19,7 @@ from app.auth.authorize import (
 from app.cli import main, run_init
 from app.main import app
 from app.models.entities import Role, User
+from app.services.grants import grant_to_role
 from app.settings import Settings, clear_settings_cache
 
 SECRET = "init-test-secret"
@@ -103,6 +104,34 @@ def test_ac_fr_25_honours_custom_sqlite_path(tmp_path, monkeypatch):
     clear_settings_cache()
 
 
+def test_second_init_preserves_extra_role_grants(tmp_path):
+    db_path = tmp_path / "store.db"
+    cfg = _settings(db_path)
+    reset_engine()
+    assert run_init(cfg) == 0
+
+    engine = create_engine(cfg.database_url)
+    session = Session(engine)
+    user_role = session.scalar(select(Role).where(Role.name == "user"))
+    grant_to_role(session, user_role.id, "items:read")
+    session.commit()
+    session.close()
+    engine.dispose()
+
+    reset_engine()
+    assert run_init(cfg) == 0
+
+    engine = create_engine(cfg.database_url)
+    session = Session(engine)
+    user_role = session.scalar(select(Role).where(Role.name == "user"))
+    names = {p.name for p in user_role.permissions}
+    assert "items:read" in names
+    assert names >= set(USER_GRANTS)
+    session.close()
+    engine.dispose()
+    reset_engine()
+
+
 def test_ac_fr_28_second_init_skips_password_change(tmp_path):
     db_path = tmp_path / "store.db"
     cfg = _settings(db_path)
@@ -127,6 +156,21 @@ def test_ac_fr_28_second_init_skips_password_change(tmp_path):
     session.close()
     engine.dispose()
     reset_engine()
+
+
+def test_ac_fr_29_empty_jwt_secret_exits_nonzero(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("JWT_SECRET", "")
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{tmp_path / 'rbac.db'}")
+    monkeypatch.setenv("ADMIN_USERNAME", "admin")
+    monkeypatch.setenv("ADMIN_EMAIL", "admin@example.com")
+    monkeypatch.setenv("ADMIN_PASSWORD", ADMIN_PASSWORD)
+    clear_settings_cache()
+    reset_engine()
+    assert main(["init"]) != 0
+    assert not (tmp_path / "rbac.db").exists()
+    reset_engine()
+    clear_settings_cache()
 
 
 def test_ac_fr_29_missing_jwt_secret_exits_nonzero(tmp_path, monkeypatch):
